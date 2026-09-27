@@ -62,10 +62,16 @@ public class Factura {
     }
 
     @Override
-    public String toString() {
-        return "Factura [id=" + id + ", fechaEmision=" + fechaEmision + ", consulta=" + consulta + ", impuesto="
-                + impuesto + ", total=" + total + "]";
-    }
+public String toString() {
+    return "\n==========================================" +
+           "\n             FACTURA GENERADA " +
+           "\n==========================================" +
+           "\nCódigo Factura : " + id +
+           "\nFecha Emisión  : " + fechaEmision +
+           "\nImpuestos      : $" + impuesto +
+           "\nTotal A Pagar  : $" + total +
+           "\n==========================================";
+}
     
     
 

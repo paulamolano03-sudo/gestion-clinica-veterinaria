@@ -11,6 +11,7 @@ import co.edu.uptc.model.Factura;
 import co.edu.uptc.model.Medicamento;
 import co.edu.uptc.persistence.ExpedienteRepository;
 import co.edu.uptc.persistence.FacturaRepository;
+import co.edu.uptc.persistence.MedicamentoRepository;
 
 public class AtencionMedicaService {
     
@@ -18,13 +19,15 @@ public class AtencionMedicaService {
     private final FacturaRepository facturaRepository;
     private final ExpedienteRepository expedienteRepository;
 
-    private static final double TARIFA_BASE_CONSULTA = 50000.0;
+    private double tarifaBaseConsulta = 50000.0;
     private double porcentajeImpuesto = 0.10;
 
     public AtencionMedicaService(FacturaRepository facturaRepository, ExpedienteRepository expedienteRepository) {
         this.facturaRepository = facturaRepository;
         this.expedienteRepository = expedienteRepository;
     }
+
+    // OPERACIONES DE ATENCION Y FACTURACION 
 
     public Factura registrarConsultaYFacturar(String idExpediente, Consulta nuevaConsulta){
         
@@ -57,7 +60,7 @@ public class AtencionMedicaService {
             costoProcedimiento = nuevaConsulta.getProcedimiento().getCosto();
         }
 
-        double totalFactura = TARIFA_BASE_CONSULTA + totalMedicamentos + costoProcedimiento;
+        double totalFactura = this.tarifaBaseConsulta + totalMedicamentos + costoProcedimiento;
 
         //crear la factura y generar id simple 
 
@@ -82,9 +85,50 @@ public class AtencionMedicaService {
     public List<Factura> obtenerHistorialFacturas(){
         return facturaRepository.listar();
     }
+
     public Factura buscarFacturaPorId(String idFactura){
         return facturaRepository.buscarPorId(idFactura);
     }
+
+    public boolean actualizarFactura(Factura facturaActualizada) {
+        Factura existente = facturaRepository.buscarPorId(facturaActualizada.getId());
+        if (existente != null) {
+            facturaRepository.actualizar(facturaActualizada);
+            return true;
+        }
+        return false;
+    }
+    public boolean anularFactura(String id) {
+    Factura existente = facturaRepository.buscarPorId(id);
+    if (existente != null) {
+        facturaRepository.eliminar(id);
+        return true;
+    }
+    return false;
+    }
+
+// CONFIGURACION DE TARIFA E IMPUESTOS
+
+    public double getTarifaBaseConsulta() {
+        return tarifaBaseConsulta;
+    }
+
+    public void actualizarTarifaBaseConsulta(double nuevaTarifa) {
+        if (nuevaTarifa >= 0) {
+            this.tarifaBaseConsulta = nuevaTarifa;
+        }
+    }
+    public double getPorcentajeImpuesto() {
+        return porcentajeImpuesto;
+    }
+
+    public void actualizarPorcentajeImpuesto(double nuevoPorcentaje) {
+        if (nuevoPorcentaje >= 0 && nuevoPorcentaje <= 1.0) {
+            this.porcentajeImpuesto = nuevoPorcentaje;
+        }
+    }
+
+    //Gestion del catalogo de medicamentos 
 
     
 
