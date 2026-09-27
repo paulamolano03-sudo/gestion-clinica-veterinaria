@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ExpedienteRepository {
 
-    private static final String RUTA_ARCHIVO = "src/main/resources/expedientes.json";
+    private static final String RUTA_ARCHIVO = "data/expedientes.json";
     private List<Expediente> expedientes;
     private final Gson gson;
 

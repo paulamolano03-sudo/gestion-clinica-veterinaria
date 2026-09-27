@@ -16,7 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import co.edu.uptc.model.Factura;
 
 public class FacturaRepository {
-    private static final String RUTA_ARCHIVO = "src/main/resources/facturas.json";
+    private static final String RUTA_ARCHIVO = "data/facturas.json";
     private List<Factura> facturas;
     private final Gson gson;
 

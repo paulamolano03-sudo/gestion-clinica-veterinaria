@@ -15,9 +15,7 @@ public class App {
                     3. Parte Paula
                     4. Salir
 
-                    Seleccione una opcion
-                
-                    """;
+                    Seleccione una opcion: """;
             System.out.println(menuPrincipal);
             opc = sc.nextInt();
 
@@ -27,10 +25,10 @@ public class App {
                     opc =4;
                     break;
                 case 2:
-                    opc =4;
+                    //
                     break;
                 case 3:
-                    opc =4;
+                    //
                     break;
                 case 4:
                     System.out.println("Saliendo de la app...");
@@ -43,7 +41,8 @@ public class App {
 
             
         }while(opc !=4);
+        sc.close();
     }
 
-    
+    //submenus y metodos 
 }
