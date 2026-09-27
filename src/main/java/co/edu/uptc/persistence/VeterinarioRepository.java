@@ -1,4 +1,4 @@
-package co.edu.uptc.service;
+package co.edu.uptc.persistence;
 import co.edu.uptc.model.Veterinario;
 
 import com.google.gson.GsonBuilder;

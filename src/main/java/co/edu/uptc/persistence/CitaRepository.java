@@ -1,4 +1,4 @@
-package co.edu.uptc.service;
+package co.edu.uptc.persistence;
 
 import java.io.BufferedReader;
 

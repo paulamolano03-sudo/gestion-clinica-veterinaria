@@ -1,6 +1,6 @@
 package co.edu.uptc.sevice;
 import co.edu.uptc.model.Veterinario;
-import co.edu.uptc.service.VeterinarioRepository;
+import co.edu.uptc.persistence.VeterinarioRepository;
 
 import java.util.List;
 
