@@ -1,6 +1,7 @@
 package co.edu.uptc.model;
 
 public class Medicamento {
+    private String id;
     private String nombreMedicamento;
     private String dosisAplicada;
     private int cantidad;
@@ -8,7 +9,8 @@ public class Medicamento {
 
     
 
-    public Medicamento(String nombreMedicamento, String dosisAplicada, int cantidad, double precioUnitario) {
+    public Medicamento(String id, String nombreMedicamento, String dosisAplicada, int cantidad, double precioUnitario) {
+        this.id =  id;
         this.nombreMedicamento = nombreMedicamento;
         this.dosisAplicada = dosisAplicada;
         this.cantidad = cantidad;
@@ -18,6 +20,7 @@ public class Medicamento {
     public Medicamento(){
 
     }
+    
 
     public String getNombreMedicamento() {
         return nombreMedicamento;
@@ -66,6 +69,14 @@ public class Medicamento {
         double montoImpuesto = subtotal * porcentajeImpuesto;
         return subtotal + montoImpuesto;
         }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
     
 
     
