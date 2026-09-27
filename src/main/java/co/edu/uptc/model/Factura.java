@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 
 public class Factura {
     private String id;
-    private LocalDateTime fechaEmision;
+    private String  fechaEmision;
     private Consulta consulta;
-    private int impuesto;
+    private double impuesto;
     private double total;
 
-    public Factura(String id, LocalDateTime fechaEmision, Consulta consulta, int impuesto, double total) {
+    public Factura(String id, String fechaEmision, Consulta consulta, double impuesto, double total) {
         this.id = id;
         this.fechaEmision = fechaEmision;
         this.consulta = consulta;
@@ -29,11 +29,11 @@ public class Factura {
         this.id = id;
     }
 
-    public LocalDateTime getFechaEmision() {
+    public String getFechaEmision() {
         return fechaEmision;
     }
 
-    public void setFechaEmision(LocalDateTime fechaEmision) {
+    public void setFechaEmision(String fechaEmision) {
         this.fechaEmision = fechaEmision;
     }
 
@@ -45,11 +45,11 @@ public class Factura {
         this.consulta = consulta;
     }
 
-    public int getImpuesto() {
+    public double getImpuesto() {
         return impuesto;
     }
 
-    public void setImpuesto(int impuesto) {
+    public void setImpuesto(double impuesto) {
         this.impuesto = impuesto;
     }
 
