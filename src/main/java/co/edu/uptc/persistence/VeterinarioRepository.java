@@ -46,7 +46,7 @@ public class VeterinarioRepository {
         File file = new File("gestion-clinica-veterinaria\\data\\Veterinarios.json");
         try (FileWriter fw = new FileWriter(file)){
 
-            gson.toJson(fw);
+            gson.toJson(veterinarios, fw);
             
             
         } catch (Exception e) {

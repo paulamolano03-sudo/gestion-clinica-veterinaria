@@ -53,7 +53,7 @@ private Gson gson;
     }
 
     public List<Cita> leerCitas() {
-        File file = new File("data/Citas.json");
+        File file = new File("gestion-clinica-veterinaria\\data\\Citas.json");
         
         if (file.exists()) {
             try {
