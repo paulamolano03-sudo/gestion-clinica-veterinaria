@@ -5,18 +5,35 @@ import java.time.LocalTime;
 
 public class Veterinario {
     
+    private String id;
     private String nombre;
     private Especialidad especialidad;
-    private LocalTime horariosAtencion; // revision 
+    private LocalTime horariosAtencion; 
 
     public Veterinario() {
     }
 
-    public Veterinario(String nombre, Especialidad especialidad, LocalTime horariosAtencion) {
+    
+
+    public Veterinario(String id, String nombre, Especialidad especialidad, LocalTime horariosAtencion) {
+        this.id = id;
         this.nombre = nombre;
         this.especialidad = especialidad;
         this.horariosAtencion = horariosAtencion;
     }
+
+
+
+        public String getId() {
+        return id;
+    }
+
+
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     public String getNombre() {
         return nombre;
@@ -50,4 +67,6 @@ public class Veterinario {
                 ", horariosAtencion=" + horariosAtencion +
                 '}';
     }
+
 }
+
