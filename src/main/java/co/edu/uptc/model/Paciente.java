@@ -9,22 +9,24 @@ public class Paciente {
     private Especie especie;
     private String raza;
     private int edad;
-    private List <String> alergiasConocidas; 
-    private Dueno dueno;
+    private double peso;
+    private List<String> alergiasConocidas = new ArrayList<>();
+    private String duenoId;
+    private transient Dueno dueno;
     private Expediente expediente;
 
     public Paciente() {
     }
 
-    public Paciente(String id, String nombre, Especie especie, String raza, int edad, String idDueno) {
+    public Paciente(String id, String nombre, Especie especie, String raza, int edad, double peso, List<String> alergiasConocidas) {
         this.id = id;
         this.nombre = nombre;
         this.especie = especie;
         this.raza = raza;
         this.edad = edad;
-        this.alergiasConocidas = new ArrayList<>();
-        this.dueno = new Dueno();
-        this.expediente = new Expediente();
+        this.peso = peso;
+        setAlergiasConocidas(alergiasConocidas);
+       
     }
 
     public String getId() { return id; }
@@ -42,7 +44,10 @@ public class Paciente {
     public int getEdad() { return edad; }
     public void setEdad(int edad) { this.edad = edad; }
 
-      public List<String> getAlergiasConocidas() {
+    public double getPeso() { return peso; }
+    public void setPeso(double peso) { this.peso = peso; }
+
+    public List<String> getAlergiasConocidas() {
         return alergiasConocidas;
     }
 
@@ -50,12 +55,22 @@ public class Paciente {
         this.alergiasConocidas = alergiasConocidas;
     }
 
+    public String getDuenoId() {
+		return duenoId;
+	}
+
+	public void setDuenoId(String duenoId) {
+		this.duenoId = duenoId;
+	}
+
     public Dueno getDueno() {
-        return dueno;
+    return dueno;
     }
 
     public void setDueno(Dueno dueno) {
         this.dueno = dueno;
+        this.duenoId = dueno == null ? null : dueno.getId();
+
     }
 
     public Expediente getExpediente() {
@@ -66,10 +81,13 @@ public class Paciente {
         this.expediente = expediente;
     }
 
-    @Override
-    public String toString() {
-        return "Paciente [id=" + id + ", nombre=" + nombre + ", especie=" + especie + ", raza=" + raza + ", edad="
-                + edad + ", alergiasConocidas=" + alergiasConocidas + ", dueno=" + dueno + ", expediente=" + expediente
-                + "]";
-    }
+
+
+	@Override
+	public String toString() {
+		return "Paciente [id=" + id + ", nombre=" + nombre + ", especie=" + especie + ", raza=" + raza + ", edad="
+				+ edad + ", peso=" + peso + ", alergiasConocidas=" + alergiasConocidas + ", dueno=" + dueno
+				+ ", expediente=" + expediente + "]";
+	}
+     
 }

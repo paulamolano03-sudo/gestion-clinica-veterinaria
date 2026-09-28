@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Consulta {
     private String id;
-    private LocalDateTime fecha;
+    private String fecha;
     private double pesoMedido;
     private String sintomas;
     private String diagnostico;
@@ -13,7 +13,7 @@ public class Consulta {
     private List<Medicamento> medicamentos;
 
 
-    public Consulta(String id, LocalDateTime fecha, double pesoMedido, String sintomas, String diagnostico,
+    public Consulta(String id, String fecha, double pesoMedido, String sintomas, String diagnostico,
             Procedimiento procedimiento, List<Medicamento> medicamentos) {
         this.id = id;
         this.fecha = fecha;
@@ -39,12 +39,12 @@ public class Consulta {
     }
 
 
-    public LocalDateTime getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
 
-    public void setFecha(LocalDateTime fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
