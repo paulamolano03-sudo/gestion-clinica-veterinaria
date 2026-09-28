@@ -123,5 +123,26 @@
     "descuento": 0.0,
     "impuesto": 4600.0,
     "total": 100600.0
+  },
+  {
+    "id": "FAC-8",
+    "fechaEmision": "27-09-2026 23:33",
+    "consulta": {
+      "pesoMedido": 2.0,
+      "sintomas": "2",
+      "diagnostico": "2",
+      "medicamentos": [
+        {
+          "id": "MED-04",
+          "nombreMedicamento": "JAJAJA",
+          "dosisAplicada": "J",
+          "cantidad": 2,
+          "precioUnitario": 23000.0
+        }
+      ]
+    },
+    "descuento": 0.0,
+    "impuesto": 4600.0,
+    "total": 100600.0
   }
 ]

@@ -64,6 +64,20 @@
             "precioUnitario": 23000.0
           }
         ]
+      },
+      {
+        "pesoMedido": 2.0,
+        "sintomas": "2",
+        "diagnostico": "2",
+        "medicamentos": [
+          {
+            "id": "MED-04",
+            "nombreMedicamento": "JAJAJA",
+            "dosisAplicada": "J",
+            "cantidad": 2,
+            "precioUnitario": 23000.0
+          }
+        ]
       }
     ],
     "historialVacunas": [
@@ -73,7 +87,8 @@
       "RABIA -10/08/2026"
     ],
     "historialCirugias": [
-      "Esterilizacion"
+      "Esterilizacion",
+      "JFJFJF"
     ]
   },
   {

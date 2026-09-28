@@ -5,15 +5,17 @@ public class Dueno {
     private String nombre;
     private String telefono;
     private String direccion;
+    private String email;
 
     public Dueno() {
     }
 
-    public Dueno(String id, String nombre, String telefono, String direccion) {
+    public Dueno(String id, String nombre, String telefono, String direccion, String email) {
         this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
         this.direccion = direccion;
+        this.email = email;
     }
 
     public String getId() { return id; }
@@ -28,10 +30,15 @@ public class Dueno {
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
 
+    public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+    
     @Override
     public String toString() {
         return "Dueno [id=" + id + ", nombre=" + nombre + ", telefono=" + telefono + ", direccion=" + direccion + "]";
     }
-
-    
 }
