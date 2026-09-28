@@ -43,7 +43,6 @@ public class ClienteService {
         return duenosService.buscarPorId(id.trim());
     }
 
-    /** Igual que buscarDueno, pero lanza excepción si no existe. */
     public Dueno consultarDueno(String id) {
         Dueno dueno = buscarDueno(id);
         if (dueno == null) {
@@ -73,7 +72,6 @@ public class ClienteService {
     }
 
     
-    /** Cambia la dirección. Es opcional: si llega vacía, se borra. */
     public void editarDireccionDueno(String id, String nuevaDireccion) {
             Dueno dueno = buscarDueno(id);
             validarCampoObligatorio(id, nuevaDireccion);
@@ -95,7 +93,7 @@ public class ClienteService {
 
     public void registrarPaciente(Paciente paciente, String duenoId){
         validarPaciente(paciente);
-        if (paciente == null){
+        if (validarPacienteExiste(paciente.getId())){
             throw new IllegalArgumentException(I18n.get("error.datosNulos"));
         }
 
@@ -225,6 +223,10 @@ public class ClienteService {
                 paciente.setExpediente(new Expediente());
             }
         }
+    }
+
+        public boolean validarPacienteExiste(String id) {
+        return buscarPaciente(id) != null;
     }
     
 }
