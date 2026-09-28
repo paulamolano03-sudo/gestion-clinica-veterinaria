@@ -10,11 +10,13 @@ import co.edu.uptc.persistence.FacturaRepository;
 import co.edu.uptc.persistence.MedicamentoRepository;
 import co.edu.uptc.sevice.AtencionMedicaService;
 import co.edu.uptc.sevice.MedicamentoService;
+import co.edu.uptc.sevice.ReportesService;
 
 public class AtencionMedicaController {
 
     private final AtencionMedicaService atencionMedicaService;
     private final MedicamentoService medicamentoService;
+    private final ReportesService reportesService;
 
     public AtencionMedicaController(){
         // instaciar repositorios
@@ -25,7 +27,7 @@ public class AtencionMedicaController {
         //iny repositorios
         this.atencionMedicaService = new AtencionMedicaService(facturaRepo, expedienteRepo);
         this.medicamentoService = new MedicamentoService(medicamentoRepo);
-
+        this.reportesService = new ReportesService(facturaRepo, expedienteRepo);
     }
     
     //el controlador recibe la peticion del menu y llama al servicio
@@ -81,4 +83,30 @@ public class AtencionMedicaController {
         return medicamentoService.eliminarDelCatalogo(id);
     }
 
+    // vacunas y cirujias
+    public void registrarVacuna(String idExpediente, String vacuna) {
+        boolean exito = atencionMedicaService.registrarVacuna(idExpediente, vacuna);
+        if (exito) {
+            System.out.println("Vacuna registrada exitosamente en el expediente " + idExpediente);
+        } else {
+            System.out.println("Error: No se encontro el expediente con ID: " + idExpediente);
+        }
+    }
+    public void registrarCirugia(String idExpediente, String cirugia) {
+        boolean exito = atencionMedicaService.registrarCirugia(idExpediente, cirugia);
+        if (exito) {
+            System.out.println("Cirugia registrada exitosamente en el expediente " + idExpediente);
+        } else {
+            System.out.println("Error: No se encontro el expediente con ID: " + idExpediente);
+        }
+    }
+
+    //REPORTES Y ESTADISTICAS 
+    public double calcularIngresosController(String periodo) {
+        return reportesService.calcularIngresosPorPeriodo(periodo);
+    }
+
+    public List<String> obtenerTop5ProcedimientosController() {
+        return reportesService.obtenerTop5Procedimientos();
+    }
 }

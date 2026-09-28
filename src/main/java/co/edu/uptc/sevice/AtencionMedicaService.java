@@ -3,6 +3,7 @@ package co.edu.uptc.sevice;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.uptc.model.Consulta;
@@ -10,6 +11,7 @@ import co.edu.uptc.model.Expediente;
 import co.edu.uptc.model.Factura;
 import co.edu.uptc.model.Medicamento;
 import co.edu.uptc.persistence.ExpedienteRepository;
+import co.edu.uptc.persistence.ExportadorCSV;
 import co.edu.uptc.persistence.FacturaRepository;
 import co.edu.uptc.persistence.MedicamentoRepository;
 
@@ -18,9 +20,15 @@ public class AtencionMedicaService {
     //inyectar repositorios
     private final FacturaRepository facturaRepository;
     private final ExpedienteRepository expedienteRepository;
+    // Instancia de la capa de persistencia para CSV
+    private final ExportadorCSV exportadorCSV = new ExportadorCSV();
 
     private double tarifaBaseConsulta = 50000.0;
     private double porcentajeImpuesto = 0.10;
+
+    // NUEVAS CONFIGURACIONES DE CAMPAÑA
+    private int mesCampanaVacunacion = 10; // Mes configurado (ej: 9 = Septiembre)
+    private double porcentajeDescuentoCampana = 0.15; // 15% de descuento
 
     public AtencionMedicaService(FacturaRepository facturaRepository, ExpedienteRepository expedienteRepository) {
         this.facturaRepository = facturaRepository;
@@ -40,6 +48,8 @@ public class AtencionMedicaService {
         //agregar la consulta al histroial medico y guardar en experdientes.json
         expediente.getConsultas().add(nuevaConsulta);
         expedienteRepository.actualizar(expediente);
+        // ACTUALIZACION AUTOMATICA DEL CSV
+        this.exportarExpedientesCSV();
 
         //iniciar calculos matematicos de la factura 
         double totalMedicamentos = 0.0;
@@ -60,7 +70,18 @@ public class AtencionMedicaService {
             costoProcedimiento = nuevaConsulta.getProcedimiento().getCosto();
         }
 
-        double totalFactura = this.tarifaBaseConsulta + totalMedicamentos + costoProcedimiento;
+        // Obtener el mes actual del sistema (1 a 12)
+        int mesActual = java.time.LocalDate.now().getMonthValue();
+        double tarifaAplicada = this.tarifaBaseConsulta;
+        double montoDescuento = 0.0; // Variable para registrar el monto descontado
+
+        // Si el mes actual coincide con el mes de campaña, aplicamos el 15% de descuento
+        if (mesActual == this.mesCampanaVacunacion) {
+            montoDescuento = this.tarifaBaseConsulta * this.porcentajeDescuentoCampana;
+            tarifaAplicada = this.tarifaBaseConsulta - montoDescuento;
+        }
+
+        double totalFactura = tarifaAplicada + totalMedicamentos + costoProcedimiento;
 
         //crear la factura y generar id simple 
 
@@ -73,6 +94,7 @@ public class AtencionMedicaService {
         String fechaFormateada = LocalDateTime.now().format(formatoElegante);
         nuevaFactura.setFechaEmision(fechaFormateada);
         nuevaFactura.setConsulta(nuevaConsulta);
+        nuevaFactura.setDescuento(montoDescuento);
         nuevaFactura.setImpuesto(totalImpuestosMedicamentos);
         nuevaFactura.setTotal(totalFactura);
         
@@ -128,7 +150,74 @@ public class AtencionMedicaService {
         }
     }
 
-    //Gestion del catalogo de medicamentos 
+    //GESTION DE VACUNAS Y CIRUJIAS
+    public boolean registrarVacuna(String idExpediente, String vacuna) {
+        Expediente expediente = expedienteRepository.buscarPorId(idExpediente);
+        
+        if (expediente != null) {
+            if (expediente.getHistorialVacunas() == null) {
+                expediente.setHistorialVacunas(new java.util.ArrayList<>());
+            }
+            expediente.getHistorialVacunas().add(vacuna);
+            expedienteRepository.actualizar(expediente);
+            // ACTUALIZACION AUTOMATICA DEL CSV
+            this.exportarExpedientesCSV();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean registrarCirugia(String idExpediente, String cirugia) {
+        Expediente expediente = expedienteRepository.buscarPorId(idExpediente);
+        
+        if (expediente != null) {
+            if (expediente.getHistorialCirugias() == null) {
+                expediente.setHistorialCirugias(new java.util.ArrayList<>());
+            }
+            expediente.getHistorialCirugias().add(cirugia);
+            expedienteRepository.actualizar(expediente);
+
+            // ACTUALIZACION AUTOMATICA DEL CSV
+            this.exportarExpedientesCSV();
+
+            return true;
+        }
+        return false;
+    }
+
+    // EXPORTACION A CSV (EXPEDIENTES)
+
+    public boolean exportarExpedientesCSV() {
+        List<Expediente> expedientes = expedienteRepository.listar();
+        List<String> lineas = new ArrayList<>();
+
+        // encabezado del archivo
+        lineas.add("ID Expediente,Cantidad Vacunas,Cantidad Cirugias,Cantidad Consultas");
+
+        // extracción de totales 
+        for (Expediente exp : expedientes) {
+            
+            int totalVacunas = 0;
+            if (exp.getHistorialVacunas() != null) {
+                totalVacunas = exp.getHistorialVacunas().size();
+            }
+
+            int totalCirugias = 0;
+            if (exp.getHistorialCirugias() != null) {
+                totalCirugias = exp.getHistorialCirugias().size();
+            }
+
+            int totalConsultas = 0;
+            if (exp.getConsultas() != null) {
+                totalConsultas = exp.getConsultas().size();
+            }
+
+            lineas.add(exp.getId() + "," + totalVacunas + "," + totalCirugias + "," + totalConsultas);
+        }
+
+        // guardado directo en la carpeta 'data'
+        return exportadorCSV.exportarArchivo("data/reporte_expedientes.csv", lineas);
+    }
 
     
 

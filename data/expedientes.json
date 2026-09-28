@@ -1,1 +1,93 @@
-[]
+[
+  {
+    "id": "EXP-001",
+    "consultas": [
+      {
+        "id": "CONS-001",
+        "fecha": "27-09-2026 10:30",
+        "pesoMedido": 12.5,
+        "sintomas": "Fiebre leve y decaimiento",
+        "diagnostico": "Infeccion leve",
+        "procedimiento": {
+          "costo": 35000.0
+        },
+        "medicamentos": []
+      },
+      {
+        "pesoMedido": 12.0,
+        "sintomas": "JDJDJD",
+        "diagnostico": "DJDJDJ"
+      },
+      {
+        "pesoMedido": 23.0,
+        "sintomas": "DJJJD",
+        "diagnostico": "DJDJ"
+      },
+      {
+        "pesoMedido": 67.0,
+        "sintomas": "SJJSJS",
+        "diagnostico": "SJJSJSJ",
+        "medicamentos": [
+          {
+            "id": "MED-04",
+            "nombreMedicamento": "JAJAJA",
+            "dosisAplicada": "3 PASTILLAS POR DIA",
+            "cantidad": 3,
+            "precioUnitario": 23000.0
+          }
+        ]
+      },
+      {
+        "pesoMedido": 12.0,
+        "sintomas": "FJFJJFJ",
+        "diagnostico": "JJJFJF",
+        "medicamentos": [
+          {
+            "id": "MED-04",
+            "nombreMedicamento": "JAJAJA",
+            "dosisAplicada": "DJDJD",
+            "cantidad": 2,
+            "precioUnitario": 23000.0
+          }
+        ]
+      },
+      {
+        "pesoMedido": 22.0,
+        "sintomas": "SJJSJS",
+        "diagnostico": "SJJSJS",
+        "medicamentos": [
+          {
+            "id": "MED-04",
+            "nombreMedicamento": "JAJAJA",
+            "dosisAplicada": "2",
+            "cantidad": 2,
+            "precioUnitario": 23000.0
+          }
+        ]
+      }
+    ],
+    "historialVacunas": [
+      "Rabia - 2025",
+      "Triple Felina - 2026",
+      "JJSJS",
+      "RABIA -10/08/2026"
+    ],
+    "historialCirugias": [
+      "Esterilizacion"
+    ]
+  },
+  {
+    "id": "EXP-002",
+    "consultas": [],
+    "historialVacunas": [
+      "Parvovirus - 2026"
+    ],
+    "historialCirugias": []
+  },
+  {
+    "id": "EXP-001",
+    "consultas": [],
+    "historialVacunas": [],
+    "historialCirugias": []
+  }
+]

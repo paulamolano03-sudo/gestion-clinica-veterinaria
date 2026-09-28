@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "id": "MED-04",
+    "nombreMedicamento": "JAJAJA",
+    "cantidad": 0,
+    "precioUnitario": 23000.0
+  }
+]

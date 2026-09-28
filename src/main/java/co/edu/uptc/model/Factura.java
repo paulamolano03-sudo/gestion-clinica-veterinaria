@@ -6,13 +6,17 @@ public class Factura {
     private String id;
     private String  fechaEmision;
     private Consulta consulta;
+    private double descuento;
     private double impuesto;
     private double total;
 
-    public Factura(String id, String fechaEmision, Consulta consulta, double impuesto, double total) {
+    
+
+    public Factura(String id, String fechaEmision, Consulta consulta, double descuento, double impuesto, double total) {
         this.id = id;
         this.fechaEmision = fechaEmision;
         this.consulta = consulta;
+        this.descuento = descuento;
         this.impuesto = impuesto;
         this.total = total;
     }
@@ -60,18 +64,28 @@ public class Factura {
     public void setTotal(double total) {
         this.total = total;
     }
+    
 
     @Override
-public String toString() {
-    return "\n==========================================" +
-           "\n             FACTURA GENERADA " +
-           "\n==========================================" +
-           "\nCódigo Factura : " + id +
-           "\nFecha Emisión  : " + fechaEmision +
-           "\nImpuestos      : $" + impuesto +
-           "\nTotal A Pagar  : $" + total +
-           "\n==========================================";
-}
+    public String toString() {
+        return "\n===========================================" +
+               "\n             FACTURA GENERADA              " +
+               "\n===========================================" +
+               "\nCódigo Factura : " + id +
+               "\nFecha Emisión  : " + fechaEmision +
+               "\nDescuento (15%): -$" + descuento + " (Campaña de Salud)" +
+               "\nImpuestos (10%): $" + impuesto +
+               "\nTotal A Pagar  : $" + total +
+               "\n===========================================";
+    }
+
+    public double getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(double descuento) {
+        this.descuento = descuento;
+    }
     
     
 

@@ -23,7 +23,8 @@ public class App {
                     1. Parte Jesus
                     2. Parte Camilo
                     3. Atencion Medica y Facturacion
-                    4. Salir
+                    4. Reportes y estadicticas
+                    5. Salir
 
                     Seleccione una opcion: """;
             System.out.print(menuPrincipal);
@@ -45,6 +46,9 @@ public class App {
                     menuAtencionMedicayFacturacion();
                     break;
                 case 4:
+                    menuReportes();
+                    break;
+                case 5:
                     System.out.println("Saliendo de la app...");
                     break;
 
@@ -53,7 +57,7 @@ public class App {
                     break;
             }
 
-        } while (opc != 4);
+        } while (opc != 5);
         sc.close();
     }
 
@@ -74,8 +78,9 @@ public class App {
                 3. Anular Factura
                 4. Agreagar medicamento al catalogo
                 5. Eliminar medicamento del catalogo
-                6. Cambiar tarifa base o porcentaje de impuesto
-                7. Volver al menu principal
+                6. Cambiar tarifa base o poracentaje de impuesto
+                7. Registrar vacuna o cirujia
+                8. Volver al menu principal
 
                 Seleccione una opcion: """;
         do {
@@ -106,6 +111,9 @@ public class App {
                     configurarTarifasEImpuestos();
                     break;
                 case 7:
+                    capturarDatosVacunaOCirugia();
+                    break;
+                case 8:
                     System.out.println("Regresando al menu principal...");
                     break;
 
@@ -114,7 +122,7 @@ public class App {
                     break;
             }
 
-        } while (opcionMedica != 7);
+        } while (opcionMedica != 8);
 
     }
 
@@ -153,6 +161,8 @@ public class App {
         consulta.setDiagnostico(sc.nextLine());
 
         List<Medicamento> medicamentosRecetados = capturarMedicamentos();
+
+        consulta.setMedicamentos(medicamentosRecetados);
 
         System.out.println("\nProcesando consulta y generando factura...");
         Factura facturaGenerada = controllerAtencionMedica.procesarAtencionMedica(idExpediente, consulta,
@@ -407,5 +417,109 @@ public class App {
         } while (subOpc != 3);
     }
 
-    
+    // ------------------------------------------------------------------------------------------
+    // REGISTRAR VACUNA O CIRUGIA
+    // ------------------------------------------------------------------------------------------
+    private static void capturarDatosVacunaOCirugia() {
+        System.out.println("\n--- REGISTRO DE VACUNA O CIRUGIA ---");
+        System.out.print("Ingrese el ID del expediente: ");
+        String idExp = sc.nextLine();
+        
+        System.out.println("¿Que desea registrar?");
+        System.out.println("1. Vacuna");
+        System.out.println("2. Cirugía");
+        System.out.print("Seleccione una opcion: ");
+        
+        int opc = 0;
+        try {
+            opc = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            opc = -1;
+        }
+        
+        switch (opc) {
+            case 1:
+                System.out.print("Ingrese el nombre de la vacuna y fecha (ej: Rabia - 10/10/2023): ");
+                String vacuna = sc.nextLine();
+                controllerAtencionMedica.registrarVacuna(idExp, vacuna);
+                break;
+            case 2:
+                System.out.print("Ingrese el nombre/descripción de la cirugía y fecha: ");
+                String cirugia = sc.nextLine();
+                controllerAtencionMedica.registrarCirugia(idExp, cirugia);
+                break;
+            default:
+                System.out.println("Opción inválida. Registro cancelado.");
+                break;
+        }
+    }
+
+    // =========================================================
+    // SUBMENU Y METODOS DE REPORTES Y ESTADISTICAS
+    // =========================================================
+
+    public static void menuReportes() {
+        int opcReporte = 0;
+        String menu = """
+                ===========================================
+                            MODULO DE REPORTES
+                ===========================================
+                1. Ver Reporte de Ingresos por Periodo
+                2. Ver Top 5 de Procedimientos mas realizados
+                3. Volver al menu principal
+
+                Seleccione una opcion: """;
+        do {
+            System.out.print(menu);
+            try {
+                opcReporte = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                opcReporte = -1;
+            }
+
+            switch (opcReporte) {
+                case 1:
+                    generarReporteIngresos();
+                    break;
+                case 2:
+                    generarTop5Procedimientos();
+                    break;
+                case 3:
+                    System.out.println("Regresando al menu principal...");
+                    break;
+                default:
+                    System.out.println("Opcion invalida. Intente de nuevo");
+                    break;
+            }
+        } while (opcReporte != 3);
+    }
+    //------------------------------------------------------------------------------------------------
+    private static void generarReporteIngresos() {
+        System.out.println("\n--- REPORTE DE INGRESOS ---");
+        System.out.println("Ingrese el periodo que desea consultar.");
+        System.out.print("Ejemplo: '2023' para el ano, '10-2023' para un mes, o '25-10-2023' para un dia exacto: ");
+        String periodo = sc.nextLine();
+        
+        // Se solicita el calculo al controlador
+        double total = controllerAtencionMedica.calcularIngresosController(periodo);
+        
+        System.out.println("\nTotal de ingresos recaudados para el periodo '" + periodo + "': $" + total + "\n");
+    }
+    //-------------------------------------------------------------------------------------------------
+    private static void generarTop5Procedimientos() {
+        System.out.println("\n--- TOP 5 PROCEDIMIENTOS MAS REALIZADOS ---");
+        
+        // Se solicita la lista ya procesada y ordenada al controlador
+        List<String> top5 = controllerAtencionMedica.obtenerTop5ProcedimientosController();
+        
+        if (top5.isEmpty()) {
+            System.out.println("No hay procedimientos medicos registrados en el sistema aun.\n");
+        } else {
+            for (String procedimiento : top5) {
+                System.out.println(procedimiento);
+            }
+
+            System.out.println("-------------------------------------------\n");
+        }
+    }
 }
