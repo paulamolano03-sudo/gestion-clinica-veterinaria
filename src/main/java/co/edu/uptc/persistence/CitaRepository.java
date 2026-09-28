@@ -22,7 +22,7 @@ import java.util.List;
 
 public class CitaRepository {
 
-private Gson gson;
+    private Gson gson;
 
     public CitaRepository() {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
@@ -56,8 +56,7 @@ private Gson gson;
         File file = new File("gestion-clinica-veterinaria\\data\\Citas.json");
         
         if (file.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                 Type tipoLista = new TypeToken<List<Cita>>(){}.getType();
                 List<Cita> citas = gson.fromJson(br, tipoLista);
                 
@@ -76,7 +75,10 @@ private Gson gson;
     }
 
     public void guardarCitas(List<Cita> citas) {
-        File file = new File("data/Citas.json");
+        File file = new File("gestion-clinica-veterinaria\\\\data\\\\Citas.json");
+        if (file.getParentFile() != null) {
+            file.getParentFile().mkdirs();
+        }
         
         try (FileWriter fw = new FileWriter(file)) {
             gson.toJson(citas, fw);
@@ -84,7 +86,4 @@ private Gson gson;
             System.out.println("Ocurrió un error al guardar el archivo de citas: " + e.getMessage());
         }
     }
-
-    
-
 }

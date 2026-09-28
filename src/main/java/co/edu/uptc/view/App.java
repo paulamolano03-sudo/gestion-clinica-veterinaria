@@ -1,6 +1,5 @@
 package co.edu.uptc.view;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,10 +8,19 @@ import co.edu.uptc.controller.AtencionMedicaController;
 import co.edu.uptc.model.Consulta;
 import co.edu.uptc.model.Factura;
 import co.edu.uptc.model.Medicamento;
+import co.edu.uptc.controller.CitaController;
+import co.edu.uptc.controller.VeterinarioController;
+import co.edu.uptc.sevice.VeterinarioService;
+import co.edu.uptc.model.Veterinario;
+import co.edu.uptc.model.Cita;
+import co.edu.uptc.model.Paciente;
 
 public class App {
     private static final Scanner sc = new Scanner(System.in);
     private static final AtencionMedicaController controllerAtencionMedica = new AtencionMedicaController();
+    private static final VeterinarioService veterinarioServiceCompartido = new VeterinarioService();
+    private static final VeterinarioController controllerVeterinario = new VeterinarioController();
+    private static final CitaController controllerCita = new CitaController(veterinarioServiceCompartido);
 
     public static void main(String[] args) {
 
@@ -28,18 +36,17 @@ public class App {
                     Seleccione una opcion: """;
             System.out.print(menuPrincipal);
             try {
-                opc = Integer.parseInt(sc.nextLine());
+                opc = Integer.parseInt(sc.nextLine().trim());
             } catch (NumberFormatException e) {
                 opc = -1;
             }
 
             switch (opc) {
                 case 1:
-                    // llamar metodo
-                    opc = 4;
+                    System.out.println("Opcion 1 seleccionada");
                     break;
                 case 2:
-                    opc =4;
+                    menuPersonalYCitas();
                     break;
                 case 3:
                     menuAtencionMedicayFacturacion();
@@ -57,11 +64,122 @@ public class App {
         sc.close();
     }
 
-    // submenus y metodos
+    public static void menuPersonalYCitas() {
+        int opcionCitas = 0;
+        String menuCitas = """
+                MENU PERSONAL Y CITAS
+                1. Registrar veterinario
+                2. Ver veterinarios
+                3. Agendar cita
+                4. Consultar agenda
+                5. Volver
+                Opcion: """;
+        do {
+            System.out.print(menuCitas);
+            try {
+                opcionCitas = Integer.parseInt(sc.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionCitas = -1;
+            }
 
-    // =========================================================
-    // SUBMENÚS Y MÉTODOS DE ATENCION MEDICA Y FACTURACION
-    // =========================================================
+            switch (opcionCitas) {
+                case 1:
+                    capturarDatosVeterinario();
+                    break;
+                case 2:
+                    mostrarVeterinarios();
+                    break;
+                case 3:
+                    capturarDatosCita();
+                    break;
+                case 4:
+                    consultarAgendaMedico();
+                    break;
+                case 5:
+                    System.out.println("Volviendo al menu principal");
+                    break;
+                default:
+                    System.out.println("Opcion invalida");
+                    break;
+            }
+        } while (opcionCitas != 5);
+    }
+
+    private static void capturarDatosVeterinario() {
+        System.out.print("ID de veterinario: ");
+        String id = sc.nextLine().trim();
+        System.out.print("Nombre de veterinario: ");
+        String nombre = sc.nextLine().trim();
+        System.out.print("Especialidad: ");
+        String especialidad = sc.nextLine().trim();
+        System.out.print("Hora de entrada(HH:MM): ");
+        String horaEntrada = sc.nextLine().trim();
+
+        String respuesta = controllerVeterinario.registrarVeterinario(id, nombre, especialidad, horaEntrada);
+        System.out.println(respuesta);
+    }
+
+    private static void mostrarVeterinarios() {
+        List<Veterinario> lista = controllerVeterinario.obtenerTodosLosVeterinarios();
+        
+        if (lista == null || lista.isEmpty()) {
+            System.out.println("No hay veterinarios registrados");
+        } else {
+            for (Veterinario v : lista) {
+                System.out.println(v.toString());
+            }
+        }
+    }
+
+    private static void capturarDatosCita() {
+        System.out.print("ID de cita: ");
+        String idCita = sc.nextLine().trim();
+        System.out.print("Nombre de veterinario: ");
+        String nombreVet = sc.nextLine().trim();
+        System.out.print("ID de paciente: ");
+        String idPaciente = sc.nextLine().trim();
+        
+        Paciente pacienteTemp = new Paciente();
+        
+        System.out.print("Motivo: ");
+        String motivo = sc.nextLine().trim();
+        System.out.print("Fecha y hora: ");
+        String fechaHora = sc.nextLine().trim();
+
+        double costo = 0;
+        boolean costoValido = false;
+        while (!costoValido) {
+            try {
+                System.out.print("Costo: ");
+                costo = Double.parseDouble(sc.nextLine().trim());
+                if (costo >= 0) {
+                    costoValido = true;
+                } else {
+                    System.out.println("Costo invalido");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Error de formato");
+            }
+        }
+
+        String resultado = controllerCita.agendarCita(idCita, pacienteTemp, nombreVet, motivo, fechaHora, costo);
+        System.out.println(resultado);
+    }
+
+    private static void consultarAgendaMedico() {
+        System.out.print("Nombre de veterinario: ");
+        String nombre = sc.nextLine().trim();
+        List<Cita> agenda = controllerCita.ConsultarAgendaVeterinario(nombre);
+
+        if (agenda == null || agenda.isEmpty()) {
+            System.out.println("No hay citas registradas");
+        } else {
+            System.out.println("Se consulto agenda de veterinario");
+            for (Cita c : agenda) {
+                System.out.println(c.toString());
+            }
+        }
+    }
 
     public static void menuAtencionMedicayFacturacion() {
         int opcionMedica = 0;
@@ -81,9 +199,9 @@ public class App {
         do {
             System.out.print(menuAtencion);
             try {
-                opcionMedica = Integer.parseInt(sc.nextLine());// evita problemas de enter con el buffer
+                opcionMedica = Integer.parseInt(sc.nextLine().trim());
             } catch (NumberFormatException e) {
-                opcionMedica = -1;// si es -1 en el switch manda al default
+                opcionMedica = -1;
             }
 
             switch (opcionMedica) {
@@ -115,15 +233,13 @@ public class App {
             }
 
         } while (opcionMedica != 7);
-
     }
 
-    // metodos
     private static void capturarDatosConsulta() {
         System.out.println("\n--- REGISTRO DE NUEVA CONSULTA ---");
 
         System.out.print("Ingrese el ID del Expediente/Mascota: ");
-        String idExpediente = sc.nextLine();// pasa luego el id al servicio y verifica que exista
+        String idExpediente = sc.nextLine().trim();
 
         Consulta consulta = new Consulta();
 
@@ -132,25 +248,23 @@ public class App {
         while (!pesoValido) {
             try {
                 System.out.print("Ingrese el peso medido de la mascota (kg): ");
-                peso = Double.parseDouble(sc.nextLine());
+                peso = Double.parseDouble(sc.nextLine().trim());
                 if (peso > 0) {
                     pesoValido = true;
-
                 } else {
                     System.out.println("El peso debe ser mayor a cero ");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Error. Ingrese un valor numerico valido");
             }
-
         }
         consulta.setPesoMedido(peso);
 
         System.out.print("Ingrese los sintomas: ");
-        consulta.setSintomas(sc.nextLine());
+        consulta.setSintomas(sc.nextLine().trim());
 
         System.out.print("Ingrese el diagnostico clinico: ");
-        consulta.setDiagnostico(sc.nextLine());
+        consulta.setDiagnostico(sc.nextLine().trim());
 
         List<Medicamento> medicamentosRecetados = capturarMedicamentos();
 
@@ -160,19 +274,16 @@ public class App {
 
         if (facturaGenerada != null) {
             System.out.println(facturaGenerada.toString());
-
         } else {
             System.out.println("\nError: No se pudo precesar la atencion.");
         }
     }
 
-    //suministrado al paciente 
-    // ------------------------------------------------------------------------------------------
     private static List<Medicamento> capturarMedicamentos() {
         List<Medicamento> listaPrescrita = new ArrayList<>();
         List<Medicamento> catalogo = controllerAtencionMedica.listarCatalogoMedicamentos();
 
-        if (catalogo.isEmpty()) {
+        if (catalogo == null || catalogo.isEmpty()) {
             System.out.println("\n No hay medicamentos en el catalogo oficial");
             System.out.println("Agregue produtos desde el submenu de administracion");
             return listaPrescrita;
@@ -185,24 +296,22 @@ public class App {
             for (Medicamento m : catalogo) {
                 System.out.println("ID: " + m.getId() + " | Nombre: " + m.getNombreMedicamento() + " | Precio Base: $"
                         + m.getPrecioUnitario());
-
             }
             System.out.print("Ingrese el id del medicamento a recetar: ");
-            String idSel = sc.nextLine();
+            String idSel = sc.nextLine().trim();
 
             Medicamento medCat = controllerAtencionMedica.buscarMedicamentoCatalogo(idSel);
 
             if (medCat != null) {
                 System.out.print("Ingrese la dosis aplicada: ");
-                String dosis = sc.nextLine();
+                String dosis = sc.nextLine().trim();
 
                 int cantidad = 1;
                 boolean cantidadValida = false;
                 do {
-
                     try {
                         System.out.print("Ingrese la cantidad: ");
-                        cantidad = Integer.parseInt(sc.nextLine());
+                        cantidad = Integer.parseInt(sc.nextLine().trim());
                         if (cantidad > 0) {
                             cantidadValida = true;
                         } else {
@@ -211,7 +320,6 @@ public class App {
                     } catch (NumberFormatException ex) {
                         System.out.println("Error: Ingrese un número entero válido.");
                     }
-
                 } while (!cantidadValida);
 
                 Medicamento recetado = new Medicamento();
@@ -221,26 +329,23 @@ public class App {
                 recetado.setDosisAplicada(dosis);
                 recetado.setCantidad(cantidad);
 
-                listaPrescrita.add(recetado);// agregamos el medicamento creado a la lista de medicamentos del paciente
+                listaPrescrita.add(recetado);
                 System.out.println("El medicamento recetado se agrego con exito ");
             } else {
                 System.out.println("Error: el id del medicamento no se encontro en el catalogo ");
             }
 
             System.out.print("\n¿Desea agregar otro medicamento? (s/n): ");
-            continuar = sc.nextLine().trim();// borra espacios sobrantes ingresados sin querer antes o despues del texto
-
+            continuar = sc.nextLine().trim();
         }
         return listaPrescrita;
     }
 
-    // ------------------------------------------------------------------------------------------
-    // mostrar historial de facturas
     private static void mostrarFacturas() {
         System.out.println("\n--- HISTORIAL DE FACTURAS ---");
         List<Factura> historial = controllerAtencionMedica.consultarHistorialFacturas();
 
-        if (historial.isEmpty()) {
+        if (historial == null || historial.isEmpty()) {
             System.out.println("No hay facturas registradas en el sistema.");
         } else {
             for (Factura f : historial) {
@@ -248,12 +353,11 @@ public class App {
             }
         }
     }
-    // ------------------------------------------------------------------------------------------
-    // anular o eliminar factura
+
     private static void anularFactura() {
         System.out.println("\n--- ANULAR FACTURA ---");
         System.out.print("Ingrese el ID de la factura a anular: ");
-        String id = sc.nextLine();
+        String id = sc.nextLine().trim();
 
         if (controllerAtencionMedica.anularFactura(id)) {
             System.out.println("Factura " + id + " eliminada del sistema con éxito.");
@@ -262,26 +366,20 @@ public class App {
         }
     }
 
-    // ------------------------------------------------------------------------------------------
-    // GESTION DEL CATALOGO DE MEDICAMENTOS
-
-    // ------------------------------------------------------------------------------------------
-
-    // agregarMedicamento
     private static void agregarMedicamentoCatalogo() {
         System.out.println("\n--- AGREGAR MEDICAMENTO AL CATALOGO ---");
         System.out.print("Ingrese ID único del medicamento (ej: MED-01): ");
-        String id = sc.nextLine();
+        String id = sc.nextLine().trim();
 
         System.out.print("Ingrese el nombre comercial o compuesto: ");
-        String nombre = sc.nextLine();
+        String nombre = sc.nextLine().trim();
 
         double precio = 0;
         boolean precioValido = false;
         while (!precioValido) {
             try {
                 System.out.print("Ingrese el precio unitario base ($): ");
-                precio = Double.parseDouble(sc.nextLine());
+                precio = Double.parseDouble(sc.nextLine().trim());
                 if (precio >= 0) {
                     precioValido = true;
                 } else {
@@ -304,13 +402,11 @@ public class App {
         }
     }
 
-    // ------------------------------------------------------------------------------------------
-    // eliminar medicamentos del catalogo
     private static void eliminarMedicamentoCatalogo() {
         System.out.println("\n--- ELIMINAR MEDICAMENTO DEL CATÁLOGO ---");
         List<Medicamento> catalogo = controllerAtencionMedica.listarCatalogoMedicamentos();
 
-        if (catalogo.isEmpty()) {
+        if (catalogo == null || catalogo.isEmpty()) {
             System.out.println("No hay medicamentos en el catálogo para eliminar.");
         } else {
             System.out.println("Medicamentos actualmente en el catálogo:");
@@ -320,7 +416,7 @@ public class App {
             }
 
             System.out.print("\nIngrese el ID del medicamento a eliminar: ");
-            String id = sc.nextLine();
+            String id = sc.nextLine().trim();
 
             if (controllerAtencionMedica.eliminarMedicamentoCatalogo(id)) {
                 System.out.println("¡Medicamento eliminado del catálogo con éxito!");
@@ -330,10 +426,6 @@ public class App {
         }
     }
 
-    // ------------------------------------------------------------------------------------------
-    // GESTION DE LA TARIFA INICAL Y EL IMPUESTO
-
-    // ------------------------------------------------------------------------------------------
     private static void configurarTarifasEImpuestos() {
         int subOpc = 0;
 
@@ -347,7 +439,7 @@ public class App {
             System.out.print("Seleccione una opción: ");
 
             try {
-                subOpc = Integer.parseInt(sc.nextLine());
+                subOpc = Integer.parseInt(sc.nextLine().trim());
             } catch (NumberFormatException e) {
                 subOpc = -1;
             }
@@ -359,7 +451,7 @@ public class App {
                     do {
                         try {
                             System.out.print("Ingrese la nueva tarifa base ($): ");
-                            nuevaTarifa = Double.parseDouble(sc.nextLine());
+                            nuevaTarifa = Double.parseDouble(sc.nextLine().trim());
                             if (nuevaTarifa >= 0) {
                                 tarifaValida = true;
                             } else {
@@ -380,7 +472,7 @@ public class App {
                     do {
                         try {
                             System.out.print("Ingrese el nuevo porcentaje de impuesto (0.10 para 10%): ");
-                            nuevoPorcentaje = Double.parseDouble(sc.nextLine());
+                            nuevoPorcentaje = Double.parseDouble(sc.nextLine().trim());
                             if (nuevoPorcentaje >= 0 && nuevoPorcentaje <= 1.0) {
                                 porcentajeValido = true;
                             } else {
@@ -406,6 +498,4 @@ public class App {
 
         } while (subOpc != 3);
     }
-
-    
 }

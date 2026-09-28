@@ -11,13 +11,18 @@ public class VeterinarioController {
 
     private VeterinarioService veterinarioService;
 
-    public VeterinarioController(){
+    // Constructor por defecto
+    public VeterinarioController() {
         this.veterinarioService = new VeterinarioService();
     }
 
-    public String registrarVeterinario(String id,String nombre, String especialidadStr, String horaEntradaStr) {
+    // Constructor que recibe el servicio compartido (este es el que soluciona el problema)
+    public VeterinarioController(VeterinarioService veterinarioService) {
+        this.veterinarioService = veterinarioService;
+    }
+
+    public String registrarVeterinario(String id, String nombre, String especialidadStr, String horaEntradaStr) {
         try {
-   
             String enumFormateado = especialidadStr.toUpperCase().replace(" ", "_");
             Especialidad especialidad = Especialidad.valueOf(enumFormateado);
             
@@ -26,15 +31,14 @@ public class VeterinarioController {
             Veterinario nuevoVet = new Veterinario(id, nombre, especialidad, horaEntrada);
             this.veterinarioService.registrarVeterinarios(nuevoVet);
             
-            return "Se registro correctametne el veterinario";
+            return "Se registro correctamente el veterinario";
             
         } catch (IllegalArgumentException e) {
-            return "Error: La especialidad no existe o el formato de hora es inválido (Formato valido: HH:MM";
+            return "Error: La especialidad no existe o el formato de hora es invalido (Formato valido: HH:MM)";
         }
     }
 
-    public List<Veterinario> obtenerTodosLosVeterinarios(){
+    public List<Veterinario> obtenerTodosLosVeterinarios() {
         return this.veterinarioService.getVeterinarios();
     }
-    
 }

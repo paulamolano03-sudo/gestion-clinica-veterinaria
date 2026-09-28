@@ -1,4 +1,5 @@
 package co.edu.uptc.sevice;
+
 import co.edu.uptc.model.Veterinario;
 import co.edu.uptc.persistence.VeterinarioRepository;
 
@@ -8,19 +9,19 @@ import java.util.List;
 public class VeterinarioService {
 
     private VeterinarioRepository veterinarioRepository;
-    private List <Veterinario> veterionarios;
+    private List<Veterinario> veterionarios;
 
-    public VeterinarioService(){
+    public VeterinarioService() {
         this.veterinarioRepository = new VeterinarioRepository();
         this.veterionarios = this.veterinarioRepository.leerVeterinarios();
 
-        if (veterionarios == null){
-           this.veterionarios = new ArrayList<>();
+        if (this.veterionarios == null) {
+            this.veterionarios = new ArrayList<>();
         }
     }
 
-    public void registrarVeterinarios(Veterinario veterinario){
-        if (veterinario == null){
+    public void registrarVeterinarios(Veterinario veterinario) {
+        if (veterinario == null) {
             return;
         }
 
@@ -29,17 +30,17 @@ public class VeterinarioService {
         System.out.println("Se ha registrado el veterinario");
     }
 
-    public List<Veterinario> getVeterinarios(){
+    public List<Veterinario> getVeterinarios() {
         return this.veterionarios;
     }
 
-    public Veterinario buscarVeterinario(String nombre){
-        if (nombre == null ){
+    public Veterinario buscarVeterinario(String nombre) {
+        if (nombre == null) {
             return null;
         }
 
-        for (Veterinario aux : this.veterionarios){
-            if (aux.getNombre() != null && aux.getNombre().equals(nombre)){
+        for (Veterinario aux : this.veterionarios) {
+            if (aux.getNombre() != null && aux.getNombre().trim().equalsIgnoreCase(nombre.trim())) {
                 return aux;
             }
         }

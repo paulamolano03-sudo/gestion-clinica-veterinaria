@@ -23,7 +23,7 @@ public class CitaController {
         Veterinario veterinarioEncontrado = this.veterinarioService.buscarVeterinario(nombreVet);
 
         if (veterinarioEncontrado == null) {
-            return "El veterinario con el nombre: " + nombreVet + "no existe en el sistema";
+            return "El veterinario con el nombre: " + nombreVet + " no existe en el sistema";
         }
         try {
             LocalDateTime fechaHora = LocalDateTime.parse(fechaHoraStr);
